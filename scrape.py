@@ -13,9 +13,10 @@ ALLOWED_LICENSES = {'322a749bcfa841b29dff1e8a1bb74b0b', 'b9ddc40b93e34cdca1fc152
 CURSOR_FILE_PATH = 'cursor.ign.txt'
 
 DEST_PATH = os.environ['SKETCHFAB_DEST_PATH']
-headers = {   
-    'Authorization': 'Token '+os.environ['SKETCHFAB_API_TOKEN'],
-}
+tokens = list(map(lambda t: {
+    'Authorization': 'Token '+t,
+}, os.environ['SKETCHFAB_API_TOKEN'].split(',')))
+
 
 params = {
     'categories' : 'cultural-heritage-history',
@@ -34,7 +35,7 @@ else:
         params['cursor'] = cursor_file.read()    
 
 print('Starting at', params['cursor'])
-r = requests.get('https://api.sketchfab.com/v3/models', params=params, headers=headers)
+r = requests.get('https://api.sketchfab.com/v3/models', params=params, headers=tokens[0])
 i = 0
 while True:
     data = r.json()
@@ -51,7 +52,7 @@ while True:
             json.dump(model, json_file)
         if model['thumbnails'] and len(model['thumbnails']['images']) > 0:
             urllib.request.urlretrieve(model['thumbnails']['images'][0]['url'], subpath+'/'+model['uid']+'.thumb.jpeg')
-        f = requests.get('https://api.sketchfab.com/v3/models/'+model['uid']+'/download', headers=headers)
+        f = requests.get('https://api.sketchfab.com/v3/models/'+model['uid']+'/download', headers=tokens[i%len(tokens)])
         files = f.json()
         if not 'glb' in files:
             print(f)
@@ -72,6 +73,6 @@ while True:
     print("Cursor:", data['cursors']['next'])
     with open(CURSOR_FILE_PATH, 'w') as cursor_file:
         f.write(data['cursors']['next'])
-    r = requests.get(data['next'], headers=headers)
+    r = requests.get(data['next'], headers=tokens[i%len(tokens)])
 
 print("Done.")
