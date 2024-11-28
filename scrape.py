@@ -66,13 +66,13 @@ while True:
             os.utime(local_filename, (mtime, mtime))
         print('Completed:', i, 'Last:', model['uid'])
         i += 1
-        time.sleep(random.randint(1,10))
+        time.sleep(random.randint(1,30))
     if not 'next' in data or not data['next']:
         break
     time.sleep(random.randint(1,4))
     print("Cursor:", data['cursors']['next'])
     with open(CURSOR_FILE_PATH, 'w') as cursor_file:
-        f.write(data['cursors']['next'])
+        cursor_file.write(data['cursors']['next'])
     r = requests.get(data['next'], headers=tokens[i%len(tokens)])
 
 print("Done.")
