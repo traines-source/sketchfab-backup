@@ -10,6 +10,7 @@ import calendar
 
 # according to https://api.sketchfab.com/v3/licenses
 ALLOWED_LICENSES = {'322a749bcfa841b29dff1e8a1bb74b0b', 'b9ddc40b93e34cdca1fc152f39b9f375', '72360ff1740d419791934298b8b6d270', 'bbfe3f7dbcdd4122b966b85b9786a989', '2628dbe5140a4e9592126c8df566c0b7', '34b725081a6a4184957efaec2cb84ed3', '7c23a1ba438d4306920229c12afcb5f9'}
+CURSOR_FILE_PATH = 'cursor.ign.txt'
 
 DEST_PATH = os.environ['SKETCHFAB_DEST_PATH']
 headers = {   
@@ -23,6 +24,14 @@ params = {
     'sort_by': 'createdAt',
     'cursor': None
 }
+
+try:
+    cursor_file = open(CURSOR_FILE_PATH, "r")
+except FileNotFoundError:
+    print('No cursor found.')
+else:
+    with cursor_file:
+        params['cursor'] = cursor_file.read()    
 
 print('Starting at', params['cursor'])
 r = requests.get('https://api.sketchfab.com/v3/models', params=params, headers=headers)
@@ -61,6 +70,8 @@ while True:
         break
     time.sleep(random.randint(1,4))
     print("Cursor:", data['cursors']['next'])
+    with open(CURSOR_FILE_PATH, 'w') as cursor_file:
+        f.write(data['cursors']['next'])
     r = requests.get(data['next'], headers=headers)
 
 print("Done.")
