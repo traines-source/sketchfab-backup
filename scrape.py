@@ -40,8 +40,8 @@ i = 0
 while True:
     data = r.json()
     for model in data['results']:
-        if not model['license']['uid'] in ALLOWED_LICENSES:
-            print('Skipping due to license', model['uid'])
+        if not model['license'] or model['license']['uid'] not in ALLOWED_LICENSES:
+            print('Skipping due to license', model['uid'], model['license'])
             continue
         subpath = DEST_PATH+model['uid'][0:1]
         if Path(subpath+'/'+model['uid']+'.glb').is_file():
