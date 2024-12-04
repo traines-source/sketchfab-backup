@@ -51,7 +51,11 @@ while True:
         with open(subpath+'/'+model['uid']+'.m.'+slugify(model['name'])+'.json', 'w') as json_file:
             json.dump(model, json_file)
         if model['thumbnails'] and len(model['thumbnails']['images']) > 0:
-            urllib.request.urlretrieve(model['thumbnails']['images'][0]['url'], subpath+'/'+model['uid']+'.thumb.jpeg')
+            max_res_t = 0
+            for t in range(len(model['thumbnails']['images'])):
+                if model['thumbnails']['images'][t]['width'] > model['thumbnails']['images'][max_res_t]['width']:
+                    max_res_t = t
+            urllib.request.urlretrieve(model['thumbnails']['images'][max_res_t]['url'], subpath+'/'+model['uid']+'.thumb.jpeg')
         f = requests.get('https://api.sketchfab.com/v3/models/'+model['uid']+'/download', headers=tokens[i%len(tokens)])
         files = f.json()
         if not 'glb' in files:
@@ -66,7 +70,7 @@ while True:
             os.utime(local_filename, (mtime, mtime))
         print('Completed:', i, 'Last:', model['uid'])
         i += 1
-        time.sleep(random.randint(1,30))
+        time.sleep(random.randint(1,40))
     if not 'next' in data or not data['next']:
         break
     time.sleep(random.randint(1,4))
