@@ -40,6 +40,7 @@ i = 0
 while True:
     data = r.json()
     for model in data['results']:
+        print('Starting', model['uid'])
         if not model['license'] or model['license']['uid'] not in ALLOWED_LICENSES:
             print('Skipping due to license', model['uid'], model['license'])
             continue
@@ -55,14 +56,20 @@ while True:
             for t in range(len(model['thumbnails']['images'])):
                 if model['thumbnails']['images'][t]['width'] > model['thumbnails']['images'][max_res_t]['width']:
                     max_res_t = t
-            urllib.request.urlretrieve(model['thumbnails']['images'][max_res_t]['url'], subpath+'/'+model['uid']+'.thumb.jpeg')
+            try:
+                urllib.request.urlretrieve(model['thumbnails']['images'][max_res_t]['url'], subpath+'/'+model['uid']+'.thumb.jpeg')
+            except Exception as e:
+                print(e)
+                print('Skipping thumb')
         f = requests.get('https://api.sketchfab.com/v3/models/'+model['uid']+'/download', headers=tokens[i%len(tokens)])
         files = f.json()
         if not 'glb' in files:
             print(f)
             print(files)
             print("MISSING", model['uid'])
-            raise Exception("429?")
+            if not 'source' in files:
+                raise Exception("429?")
+            continue
         #urllib.request.urlretrieve(files['source']['url'], subpath+'/'+model['uid']+'.zip')
         local_filename, resp_headers = urllib.request.urlretrieve(files['glb']['url'], subpath+'/'+model['uid']+'.glb')
         if 'Last-Modified' in resp_headers:
