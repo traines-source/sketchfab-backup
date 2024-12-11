@@ -45,7 +45,7 @@ while True:
             print('Skipping due to license', model['uid'], model['license'])
             continue
         subpath = DEST_PATH+model['uid'][0:1]
-        if Path(subpath+'/'+model['uid']+'.glb').is_file():
+        if Path(subpath+'/'+model['uid']+'.zip').is_file():
             print('Skipping because existing', model['uid'])
             continue
         Path(subpath).mkdir(exist_ok=True)
@@ -63,7 +63,7 @@ while True:
                 print('Skipping thumb')
         f = requests.get('https://api.sketchfab.com/v3/models/'+model['uid']+'/download', headers=tokens[i%len(tokens)])
         files = f.json()
-        if not 'glb' in files:
+        if not 'gltf' in files:
             print(f)
             print(files)
             print("MISSING", model['uid'])
@@ -71,7 +71,7 @@ while True:
                 raise Exception("429?")
             continue
         #urllib.request.urlretrieve(files['source']['url'], subpath+'/'+model['uid']+'.zip')
-        local_filename, resp_headers = urllib.request.urlretrieve(files['glb']['url'], subpath+'/'+model['uid']+'.glb')
+        local_filename, resp_headers = urllib.request.urlretrieve(files['gltf']['url'], subpath+'/'+model['uid']+'.zip')
         if 'Last-Modified' in resp_headers:
             mtime = calendar.timegm(time.strptime(resp_headers['Last-Modified'], '%a, %d %b %Y %H:%M:%S GMT'))
             os.utime(local_filename, (mtime, mtime))
