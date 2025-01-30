@@ -44,7 +44,7 @@ while True:
         if not model['license'] or model['license']['uid'] not in ALLOWED_LICENSES:
             print('Skipping due to license', model['uid'], model['license'])
             continue
-        subpath = DEST_PATH+model['uid'][0:1]
+        subpath = DEST_PATH+model['uid'][0:2]
         if Path(subpath+'/'+model['uid']+'.zip').is_file():
             print('Skipping because existing', model['uid'])
             continue
@@ -67,7 +67,7 @@ while True:
             print(f)
             print(files)
             print("MISSING", model['uid'])
-            if not 'source' in files:
+            if not 'source' in files and model['uid'] != 'dummy':
                 raise Exception("429?")
             continue
         #urllib.request.urlretrieve(files['source']['url'], subpath+'/'+model['uid']+'.zip')
@@ -77,7 +77,9 @@ while True:
             os.utime(local_filename, (mtime, mtime))
         print('Completed:', i, 'Last:', model['uid'])
         i += 1
-        time.sleep(random.randint(1,40))
+        if i >= len(tokens)*299:
+            raise Exception("Pre-429")
+        time.sleep(random.randint(1,int(400/len(tokens)*(1-min(i, len(tokens)*300-i)/len(tokens)/300*3/2))))
     if not 'next' in data or not data['next']:
         break
     time.sleep(random.randint(1,4))
