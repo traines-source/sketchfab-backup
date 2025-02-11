@@ -10,17 +10,13 @@ The mirrored data is available here for the time being: __https://mirror.traines
 
 They should move ASAP somewhere else, where they can be properly browsed:
 
-* https://commons.wikimedia.org/ – glb format compatibility is in the works (?)
+* https://commons.wikimedia.org/ – glb format compatibility is in the works (https://commons.wikimedia.org/wiki/Commons:Textured_3D)
 * https://henge.io/ - another private, but seemingly open platform
+* https://3dmr.eu/
+* https://polyhaven.com/models
+* https://threedscans.com/
+* https://3d.si.edu/cc0
+* (cf. https://phabricator.wikimedia.org/T187844)
 * TBD...
 
-In the meantime, if you have spare storage (the entirety of Sketchfab could be dozens of terabytes) or other propositions/ideas, get in touch (e.g. via issues or email)!
-
-You can also help scraping. But then it probably makes sense to coordinate who scapes what (e.g. via issues). If you want to scrape yourself, you may check out this repo and run with Docker:
-```
-docker run -it --name sketchfab-backup \
--v /your/path/:/your/path/ \
--e SKETCHFAB_DEST_PATH=/your/path/ \
--e SKETCHFAB_API_TOKEN=<your-token-from-sketchfab> $(docker build -q .) 
-```
-Token can be obtained from https://sketchfab.com/settings/password.
+Before you start scraping yourself, please coordinate who scapes what (e.g. via issues). It does not make sense to scrape everything thrice!
