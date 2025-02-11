@@ -8,7 +8,9 @@ We try to download and mirror as many [CC](https://creativecommons.org/) license
 
 The mirrored data is available here for the time being: __https://mirror.traines.eu/sketchfab-backup/__
 
-They should move ASAP somewhere else, where they can be properly browsed:
+Please refrain from bulk-downloading everything from the mirror. If you absolutely want to host a mirror of the mirror, please get in touch and I can give you access via SAMBA/SSH.
+
+The data should move ASAP somewhere else, where they can be properly browsed:
 
 * https://commons.wikimedia.org/ – glb format compatibility is in the works (https://commons.wikimedia.org/wiki/Commons:Textured_3D)
 * https://henge.io/ - another private, but seemingly open platform
